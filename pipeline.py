@@ -1,6 +1,12 @@
 import os
 import json
+import dotenv
+import pip
 import requests
+from dotenv import load_dotenv
+load_dotenv()
+
+
 
 # ---------------------------------------------------------
 # GLOBAL CONFIGURATION & API SETUP
