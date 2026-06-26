@@ -1,23 +1,28 @@
 import os
 import json
-import re
+import sys
 import requests
-import webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
-from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
+# Try to load .env locally; on Render, env vars are set directly
+try:
+    from dotenv import load_dotenv
+    dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(dotenv_path):
+        load_dotenv(dotenv_path=dotenv_path)
+except ImportError:
+    pass  # python-dotenv not available on Render (we use env vars directly)
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
 
 if not OPENROUTER_API_KEY:
-    print("❌ OPENROUTER_API_KEY not found in .env file.")
-    exit(1)
+    print("❌ OPENROUTER_API_KEY is not set. Set it as an environment variable or in .env")
+    sys.exit(1)
 
-print(f"✅ OpenRouter API key loaded successfully.")
+print("✅ OpenRouter API key loaded successfully.")
 
-# Model configurations with fallbacks (using free models for no-cost operation)
+# Model configurations with fallbacks
 PRIMARY_MODEL = "openai/gpt-4o"
 REASONING_MODEL = "anthropic/claude-3.5-sonnet"
 PRIMARY_MODEL_FALLBACKS = ["openai/gpt-4o-mini", "anthropic/claude-3-haiku"]
@@ -31,7 +36,7 @@ FREE_MODEL_FALLBACKS = [
 
 
 def _candidate_models(base_model: str) -> list[str]:
-    """Build candidate model list with fallbacks like pipeline.py does."""
+    """Build candidate model list with fallbacks."""
     candidates = [base_model]
     if base_model == PRIMARY_MODEL:
         for fb in PRIMARY_MODEL_FALLBACKS:
@@ -41,7 +46,6 @@ def _candidate_models(base_model: str) -> list[str]:
         for fb in REASONING_MODEL_FALLBACKS:
             if fb not in candidates:
                 candidates.append(fb)
-    # Always add free model fallbacks at the end
     for fb in FREE_MODEL_FALLBACKS:
         if fb not in candidates:
             candidates.append(fb)
@@ -71,8 +75,11 @@ class PipelineAPIHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html")
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            with open("dashboard.html", "rb") as f:
-                self.wfile.write(f.read())
+            try:
+                with open("dashboard.html", "rb") as f:
+                    self.wfile.write(f.read())
+            except FileNotFoundError:
+                self._send_json(500, {"error": "dashboard.html not found"})
             return
 
         self._send_json(404, {"error": "Not found"})
@@ -126,7 +133,6 @@ class PipelineAPIHandler(BaseHTTPRequestHandler):
                     json=payload,
                     timeout=90,
                 )
-                # Skip rate-limited, payment-required, or not-found models
                 if response.status_code in {404, 429, 402}:
                     last_error = f"OpenRouter API error [{response.status_code}]: {response.text}"
                     continue
@@ -141,7 +147,7 @@ class PipelineAPIHandler(BaseHTTPRequestHandler):
                 payload_resp = response.json()
                 content = payload_resp.get("choices", [{}])[0].get("message", {}).get("content", "")
                 self._send_json(200, {"content": content.strip()})
-                return  # Success!
+                return
 
             except requests.RequestException as exc:
                 last_error = f"Request failed: {str(exc)}"
@@ -150,19 +156,17 @@ class PipelineAPIHandler(BaseHTTPRequestHandler):
                 last_error = f"Response parsing error: {str(exc)}"
                 continue
 
-        # All candidates failed
         self._send_json(503, {
             "error": f"All model candidates exhausted. Last error: {last_error}"
         })
 
 
 if __name__ == "__main__":
-    PORT = 8765
+    PORT = int(os.getenv("PORT", "8765"))
     server = HTTPServer(("0.0.0.0", PORT), PipelineAPIHandler)
-    url = f"http://localhost:{PORT}"
-    print(f"\n🚀 Pipeline Server running at {url}")
+    print(f"\n🚀 Pipeline Server running on port {PORT}")
+    print(f"   Dashboard: http://localhost:{PORT}" if os.getenv("PORT") is None else f"   Dashboard: http://0.0.0.0:{PORT}")
     print("   Press Ctrl+C to stop.\n")
-    webbrowser.open(url)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
