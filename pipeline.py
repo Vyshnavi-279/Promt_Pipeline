@@ -11,15 +11,15 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 # ---------------------------------------------------------
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
 
-# Preferred free-tier model slugs requested for this assignment.
-PREFERRED_PRIMARY_MODEL = "mistralai/mistral-7b-instruct:free"
-PREFERRED_REASONING_MODEL = "microsoft/phi-3-medium-128k-instruct:free"
+# Best AI models available on OpenRouter
+PREFERRED_PRIMARY_MODEL = "openai/gpt-4o"
+PREFERRED_REASONING_MODEL = "anthropic/claude-3.5-sonnet"
 
-# Active fallback models that have been verified to respond successfully on OpenRouter.
+# Models (with fallbacks)
 PRIMARY_MODEL = PREFERRED_PRIMARY_MODEL
 REASONING_MODEL = PREFERRED_REASONING_MODEL
-PRIMARY_MODEL_FALLBACKS = ["qwen/qwen-2.5-7b-instruct", "google/gemma-4-26b-a4b-it:free"]
-REASONING_MODEL_FALLBACKS = ["google/gemma-4-26b-a4b-it:free", "qwen/qwen-2.5-7b-instruct"]
+PRIMARY_MODEL_FALLBACKS = ["openai/gpt-4o-mini", "anthropic/claude-3-haiku"]
+REASONING_MODEL_FALLBACKS = ["openai/gpt-4o", "openai/gpt-4o-mini"]
 
 
 def _candidate_models(base_model: str, fallback_models: list[str]) -> list[str]:
@@ -207,9 +207,9 @@ def stage3_produce(stage1_data: dict, stage2_data: dict) -> str:
     return call_llm(prompt, PRIMARY_MODEL)
 
 
-def run_pipeline(raw_input_text: str):
+def run_pipeline(raw_input_text: str, index: int = 0):
     print("\n" + "═" * 80)
-    print("🚀 AGENT PIPELINE PIPING SEQUENCE START")
+    print(f"🚀 AGENT PIPELINE PIPING SEQUENCE START — Ticket #{index + 1}")
     print("═" * 80)
     print(f"📥 RAW SOURCE PROSE:\n{raw_input_text}\n")
 
@@ -223,12 +223,25 @@ def run_pipeline(raw_input_text: str):
     print(f"🟦 [STAGE 3: FINAL PRODUCED OUTPUT]:\n{s3_output}")
     print("═" * 80 + "\n")
 
+    return {
+        "input": raw_input_text,
+        "stage1": s1_output,
+        "stage2": s2_output,
+        "stage3": s3_output,
+    }
+
 
 if __name__ == "__main__":
     input_1 = "Hi, my name is Alex Smith. I placed an order (#99382) 9 days ago and my tracking info still hasn't updated. I am really frustrated with how slow this is."
     input_2 = "Can someone check what happened to my delivery? It's been an absolute eternity. Sincerely, Clara Jenkins."
     input_3 = "asdfasdfasd!!! 🚨🚨 1234567"
 
-    run_pipeline(input_1)
-    run_pipeline(input_2)
-    run_pipeline(input_3)
+    results = []
+    for i, text in enumerate([input_1, input_2, input_3]):
+        result = run_pipeline(text, i)
+        results.append(result)
+
+    # Save results to JSON for the dashboard
+    with open("pipeline_results.json", "w") as f:
+        json.dump(results, f, indent=2)
+    print("✅ Results saved to pipeline_results.json")

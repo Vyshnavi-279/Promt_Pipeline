@@ -1,0 +1,56 @@
+[
+  {
+    "input": "Hi, my name is Alex Smith. I placed an order (#99382) 9 days ago and my tracking info still hasn't updated. I am really frustrated with how slow this is.",
+    "stage1": {
+      "customer_name": "Alex Smith",
+      "order_id": "99382",
+      "core_issue": "tracking info hasn't updated",
+      "days_waiting": 9,
+      "sentiment": "highly frustrated"
+    },
+    "stage2": {
+      "reasoning_steps": [
+        "Fallback reasoning due to model parsing failure."
+      ],
+      "priority": "P1",
+      "route": "logistics_team"
+    },
+    "stage3": "Hello Alex, I\u2019m so sorry to hear you\u2019re frustrated. Our logistics team is looking into why your tracking info hasn\u2019t updated. We\u2019ll keep you informed. Thank you for your patience."
+  },
+  {
+    "input": "Can someone check what happened to my delivery? It's been an absolute eternity. Sincerely, Clara Jenkins.",
+    "stage1": {
+      "customer_name": "Clara Jenkins",
+      "order_id": "UNKNOWN",
+      "core_issue": "delivery issue",
+      "days_waiting": "UNKNOWN",
+      "sentiment": "highly frustrated"
+    },
+    "stage2": {
+      "reasoning_steps": [
+        "Fallback reasoning due to model parsing failure."
+      ],
+      "priority": "P1",
+      "route": "logistics_team"
+    },
+    "stage3": "Hello Clara Jenkins, I understand you\u2019re highly frustrated with the delivery issue. Our logistics team is looking into this urgently. We\u2019ll keep you updated on the progress. Thank you for your patience."
+  },
+  {
+    "input": "asdfasdfasd!!! \ud83d\udea8\ud83d\udea8 1234567",
+    "stage1": {
+      "customer_name": "UNKNOWN",
+      "order_id": "UNKNOWN",
+      "core_issue": "UNKNOWN",
+      "days_waiting": "UNKNOWN",
+      "sentiment": "highly frustrated"
+    },
+    "stage2": {
+      "reasoning_steps": [
+        "Fallback reasoning due to model parsing failure."
+      ],
+      "priority": "P1",
+      "route": "customer_relations"
+    },
+    "stage3": "I understand how frustrating this must be, Customer Name. Our team is working diligently on your issue, and I\u2019ll keep you updated. Thank you for your patience. We\u2019re here to help!"
+  }
+]

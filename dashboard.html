@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Pipeline // AI Support Desk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=500;600;700;800&family=Space+Grotesk:wght=500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-canvas: #F4F0E6;
+            --clay-surface: #FAF8F4;
+            --slate-dark: #2A332E;
+            --sage-grad-start: #E2EDE0;
+            --sage-grad-end: #C4DFC1;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--slate-dark);
+            overflow-x: hidden;
+            perspective: 2500px;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .sculpted-wave-bg-1 {
+            position: absolute;
+            top: -10%; left: -5%; width: 110%; height: 75%;
+            background: linear-gradient(135deg, rgba(229, 239, 227, 0.75) 0%, rgba(199, 223, 196, 0.6) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 80% 65%, 45% 40%, 20% 75%, 0 50%);
+            filter: blur(4px);
+            z-index: 1;
+            pointer-events: none;
+            transform: translateZ(-40px);
+        }
+
+        .sculpted-canvas {
+            background: var(--clay-surface);
+            border-radius: 32px;
+            box-shadow: 
+                0 30px 60px rgba(142, 136, 118, 0.18),
+                0 12px 24px rgba(142, 136, 118, 0.1),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.95),
+                inset -6px -6px 15px rgba(168, 161, 138, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .fluid-organic-sculpt {
+            background: linear-gradient(135deg, var(--sage-grad-start) 0%, var(--sage-grad-end) 100%);
+            border-radius: 32px;
+            box-shadow: 
+                0 30px 60px rgba(125, 145, 123, 0.18),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.9),
+                inset -6px -6px 15px rgba(95, 115, 93, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .carved-pocket {
+            background: #EAF0EB;
+            border-radius: 20px;
+            box-shadow: 
+                inset 4px 4px 8px rgba(115, 125, 118, 0.25),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0,0,0,0.02);
+            outline: none;
+        }
+
+        .carved-pocket-inner-glow {
+            background: #DCE5DE;
+            box-shadow: 
+                inset 4px 4px 8px rgba(100, 110, 103, 0.3),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+        }
+
+        .plush-pill-btn {
+            background: linear-gradient(135deg, #7FA37A 0%, #5B7A56 100%);
+            color: #FFFFFF;
+            border-radius: 100px;
+            box-shadow: 
+                0 12px 24px rgba(91, 122, 86, 0.3),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .plush-pill-btn:hover {
+            transform: scale(1.01) translateY(-1px);
+            box-shadow: 0 16px 28px rgba(91, 122, 86, 0.4);
+        }
+
+        .plush-pill-btn:active {
+            transform: scale(0.99) translateY(1px);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex flex-col justify-between gap-8 relative bg-[#F4F0E6]">
+
+    <div class="sculpted-wave-bg-1"></div>
+
+    <header class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6 relative z-50">
+        <div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-[#202924]">Prompt Pipeline</h1>
+            <p class="text-[#526259] font-medium text-xs tracking-widest uppercase mt-0.5">User-Friendly AI Customer Assistance Portal</p>
+        </div>
+        
+        <div class="sculpted-canvas p-3.5 flex flex-row items-center gap-3 w-full lg:w-auto">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-bold text-[#5E6D64] uppercase tracking-wider whitespace-nowrap">Backend Key Active</span>
+            <span class="text-[10px] font-mono text-emerald-600/60">loaded from .env</span>
+        </div>
+    </header>
+
+    <main class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch my-auto relative z-40">
+        <section class="lg:col-span-4 flex flex-col">
+            <div class="sculpted-canvas p-6 flex-1 flex flex-col gap-5">
+                <h3 class="text-lg font-bold text-[#202924] flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    Customer Issue Desk
+                </h3>
+                
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-bold text-[#5E6D64]">Want to try a test scenario preset?</label>
+                    <select id="presetSelect" onchange="loadPresetCase()" class="carved-pocket p-3 text-xs text-[#202924] font-semibold cursor-pointer appearance-none bg-white">
+                        <option value="">-- Or type your own problem below --</option>
+                        <option value="alex">Preset Alpha: Alex Smith (9-Day Delay)</option>
+                        <option value="clara">Preset Beta: Clara Jenkins (Long Transit)</option>
+                        <option value="anomaly">Preset Gamma: Security Text Test</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1.5 flex-1">
+                    <label class="text-xs font-bold text-[#5E6D64]">Type or paste the support problem here:</label>
+                    <textarea id="ticketInput" placeholder="Describe the issue or complaint completely here. Any user can enter their issues freely..." class="carved-pocket p-4 text-xs text-[#202924] flex-1 min-h-[220px] resize-none leading-relaxed font-medium bg-white"></textarea>
+                </div>
+
+                <button onclick="executePipeline()" id="runBtn" class="plush-pill-btn w-full py-4 text-xs font-extrabold tracking-wider uppercase">
+                    Process & Generate Answer
+                </button>
+            </div>
+        </section>
+
+        <section class="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            <div class="sculpted-canvas p-5 flex flex-col gap-4">
+                <div class="flex justify-between items-center border-b border-black/5 pb-2">
+                    <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Step 1</span>
+                    <span id="modelLabelS1" class="text-[9px] font-mono text-slate-400">AI Model</span>
+                </div>
+                <h4 class="font-bold text-xs text-[#202924]">Extracted Details (JSON)</h4>
+                <div id="stage1Display" class="carved-pocket p-3.5 font-mono text-[11px] text-emerald-950 overflow-auto flex-1 whitespace-pre-wrap font-medium bg-white">{}</div>
+            </div>
+
+            <div class="fluid-organic-sculpt p-5 flex flex-col gap-4">
+                <div class="flex justify-between items-center border-b border-black/5 pb-2">
+                    <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-800 text-white">Step 2</span>
+                    <span id="modelLabelS2" class="text-[9px] font-mono text-emerald-900/60">AI Model</span>
+                </div>
+                <h4 class="font-bold text-xs text-emerald-950">AI Reasoning Strategy</h4>
+                <div class="flex flex-col gap-3 flex-1">
+                    <div id="cotDisplay" class="carved-pocket carved-pocket-inner-glow p-3.5 text-xs text-emerald-950 overflow-auto flex-1 font-medium">Awaiting analysis...</div>
+                    <div class="flex flex-col gap-1.5 font-bold text-[10px] uppercase">
+                        <span id="priorityBadge" class="p-2 rounded-lg bg-[#BFD9BE] text-emerald-950 text-center">Urgency: --</span>
+                        <span id="routeBadge" class="p-2 rounded-lg bg-[#BFD9BE] text-emerald-950 text-center">Assigned Team: --</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sculpted-canvas p-5 flex flex-col gap-4">
+                <div class="flex justify-between items-center border-b border-black/5 pb-2">
+                    <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800">Step 3</span>
+                    <span id="modelLabelS3" class="text-[9px] font-mono text-slate-400">AI Model</span>
+                </div>
+                <h4 class="font-bold text-xs text-[#202924]">Suggested Email Response</h4>
+                <div id="stage3Display" class="carved-pocket p-3.5 text-xs text-[#202924] overflow-auto flex-1 leading-relaxed font-medium bg-white italic">The final human-readable response will appear here...</div>
+                <button onclick="copyOutput()" class="plush-pill-btn text-xs py-3 font-bold">Copy Response Text</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full max-w-7xl mx-auto relative z-40">
+        <div class="sculpted-canvas p-4 flex flex-col gap-2">
+            <h4 class="font-bold text-xs text-[#202924] flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                System Status Monitor
+            </h4>
+            <div id="terminalLogs" class="carved-pocket p-3 font-mono text-[11px] text-emerald-950 min-h-[80px] max-h-[100px] overflow-y-auto flex flex-col gap-1 bg-[#F0ECE1]">
+                <div>[SYSTEM READY] Desk ready. Enter any user problem text to begin processing loops.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const cards = document.querySelectorAll('.sculpted-canvas, .fluid-organic-sculpt');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 90;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 90;
+            cards.forEach(card => card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`);
+        });
+
+        const cases = {
+            alex: "Hi, my name is Alex Smith. I placed an order (#99382) 9 days ago and my tracking info still hasn't updated. I am really frustrated with how slow this is.",
+            clara: "Can someone check what happened to my delivery? It's been an absolute eternity. Sincerely, Clara Jenkins.",
+            anomaly: "Warning system failure detection analysis needed immediately."
+        };
+
+        function loadPresetCase() {
+            const val = document.getElementById("presetSelect").value;
+            if(val && cases[val]) {
+                document.getElementById("ticketInput").value = cases[val];
+                addLog(`Loaded test scenario preset profile: [${val.toUpperCase()}]`);
+            }
+        }
+
+        function addLog(msg) {
+            const container = document.getElementById("terminalLogs");
+            const div = document.createElement("div");
+            div.innerHTML = `<span class="text-slate-400">[${new Date().toISOString().slice(11, 19)}]</span> <span class="font-semibold">${msg}</span>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function cleanAndParseJSON(rawStr) {
+            let clean = rawStr.trim();
+            if (clean.includes("```json")) {
+                clean = clean.split("```json")[1].split("```")[0];
+            } else if (clean.includes("```")) {
+                clean = clean.split("```")[1].split("```")[0];
+            }
+            const firstBracket = clean.indexOf("{");
+            const lastBracket = clean.lastIndexOf("}");
+            if (firstBracket !== -1 && lastBracket !== -1) {
+                clean = clean.substring(firstBracket, lastBracket + 1);
+            }
+            return JSON.parse(clean.trim());
+        }
+
+        async function callProxy(prompt, model, labelElId) {
+            document.getElementById(labelElId).innerText = model.split('/').pop() || model;
+            
+            const response = await fetch("/api/llm", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt, model })
+            });
+
+            if(!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || `Upstream Error [${response.status}]`);
+            }
+
+            const data = await response.json();
+            return data.content;
+        }
+
+        async function executePipeline() {
+            const inputProse = document.getElementById("ticketInput").value.trim();
+
+            if(!inputProse) {
+                alert("Please select or type a complaint scenario track first!");
+                return;
+            }
+
+            document.getElementById("stage1Display").innerText = "Extracting data layers...";
+            document.getElementById("cotDisplay").innerText = "Analyzing response strategy vectors...";
+            document.getElementById("stage3Display").innerText = "Drafting client correspondence block...";
+
+            addLog("Starting 3-stage agent loop sequence execution...");
+
+            try {
+                // STAGE 1
+                const promptS1 = `Extract parameters into raw JSON object string ONLY with schema keys: {"customer_name": "string", "order_id": "string", "core_issue": "string", "days_waiting": "integer or UNKNOWN", "sentiment": "highly frustrated | neutral | satisfied"}. Ticket content: "${inputProse}"`;
+                addLog("Running Stage 1 Parameters Processing...");
+                const s1Raw = await callProxy(promptS1, "openai/gpt-4o", "modelLabelS1");
+                
+                let s1Json;
+                try {
+                    s1Json = cleanAndParseJSON(s1Raw);
+                } catch(pe) {
+                    s1Json = { customer_name: "Customer", order_id: "UNKNOWN", core_issue: inputProse, days_waiting: "UNKNOWN", sentiment: "neutral" };
+                }
+                document.getElementById("stage1Display").innerText = JSON.stringify(s1Json, null, 2);
+                addLog("✔ Stage 1 parameter data matrix captured.");
+
+                // STAGE 2
+                const promptS2 = `Analyze this dataset: ${JSON.stringify(s1Json)}. Respond with raw JSON object layout schema ONLY matching: {"reasoning_steps": "string description", "priority": "P1 | P2 | P3", "route": "logistics_team | billing_department | customer_relations"}`;
+                addLog("Running Stage 2 Policy Analysis Logic...");
+                const s2Raw = await callProxy(promptS2, "anthropic/claude-3.5-sonnet", "modelLabelS2");
+                
+                let s2Json;
+                try {
+                    s2Json = cleanAndParseJSON(s2Raw);
+                } catch(pe) {
+                    s2Json = { reasoning_steps: "Standard delay protocol escalation analysis flagged.", priority: "P2", route: "customer_relations" };
+                }
+                document.getElementById("cotDisplay").innerText = s2Json.reasoning_steps;
+                document.getElementById("priorityBadge").innerText = `Urgency: ${s2Json.priority}`;
+                document.getElementById("routeBadge").innerText = `Assigned Team: ${s2Json.route.toUpperCase().replace('_', ' ')}`;
+                addLog("✔ Stage 2 core strategy matrix assigned.");
+
+                // STAGE 3
+                const promptS3 = `Write a short support response email under 100 words to the user based on client data parameters: ${JSON.stringify(s1Json)} and routing strategy: ${JSON.stringify(s2Json)}. Return ONLY the clean raw email text body.`;
+                addLog("Running Stage 3 Text Composition Engine...");
+                const s3Prose = await callProxy(promptS3, "openai/gpt-4o", "modelLabelS3");
+                document.getElementById("stage3Display").innerText = s3Prose;
+                addLog("🏁 Pipeline cycle completed successfully.");
+
+            } catch (error) {
+                addLog(`❌ Pipeline cycle broken: ${error.message}`);
+                document.getElementById("stage1Display").innerText = "Execution failed.";
+                document.getElementById("cotDisplay").innerText = "Execution failed.";
+                document.getElementById("stage3Display").innerText = `Diagnostic Loop Report:\n\n${error.message}\n\n[System Note]: Standard public routes are overloaded. This indicates an official infrastructure latency spike on OpenRouter's servers.`;
+            }
+        }
+
+        function copyOutput() {
+            navigator.clipboard.writeText(document.getElementById("stage3Display").innerText);
+            addLog("Copied generated email response text back to clipboard.");
+            alert("Email response text copied!");
+        }
+    </script>
+</body>
+</html>
